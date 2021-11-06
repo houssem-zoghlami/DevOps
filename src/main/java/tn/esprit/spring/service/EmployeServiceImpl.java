@@ -13,8 +13,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 @Service
 public class EmployeServiceImpl implements IEmployeService {
+	private static final Logger l = Logger.getLogger(EmployeServiceImpl.class);
+
 
 	@Autowired
 	EmployeRepository employeRepository;
@@ -30,91 +34,127 @@ public class EmployeServiceImpl implements IEmployeService {
 		return employe.getId();
 	}
 
+
+
 	public void mettreAjourEmailByEmployeId(String email, int employeId) {
-		Employe employe = employeRepository.findById(employeId).get();
-		employe.setEmail(email);
-		employeRepository.save(employe);
+		l.debug("Methode mettre a jour email employee");
+		try {
+			Employe employe = employeRepository.findById(employeId).orElse(null);
+			if(employe!=null){
+				employe.setEmail(email);
+				employeRepository.save(employe);
+				l.debug("mettreAjourEmailByEmployeId fini avec succes ");
+
+			}
+		}
+		catch (Exception e) {
+			l.error("erreur methode affecter employeadepartement : " +e);
+		}
 
 	}
 
-	@Transactional	
+	@Transactional
 	public void affecterEmployeADepartement(int employeId, int depId) {
-		Departement depManagedEntity = deptRepoistory.findById(depId).get();
-		Employe employeManagedEntity = employeRepository.findById(employeId).get();
+		l.debug("Methode mettre a jour email employee");
+		Departement depManagedEntity = deptRepoistory.findById(depId).orElse(null);
+		Employe employeManagedEntity = employeRepository.findById(employeId).orElse(null);
+		try {
+			if(depManagedEntity!=null)
+				if( depManagedEntity.getEmployes() == null){
 
-		if(depManagedEntity.getEmployes() == null){
+					List<Employe> employes = new ArrayList<>();
+					employes.add(employeManagedEntity);
+					depManagedEntity.setEmployes(employes);
+				}else{
 
-			List<Employe> employes = new ArrayList<>();
-			employes.add(employeManagedEntity);
-			depManagedEntity.setEmployes(employes);
-		}else{
+					depManagedEntity.getEmployes().add(employeManagedEntity);
+					l.debug("effecterEmployeAdepartement fini avec succes ");
 
-			depManagedEntity.getEmployes().add(employeManagedEntity);
+				}
+		}
+		catch (Exception e) {
+			l.error("erreur methode affecter employeadepartement : " +e);
 
 		}
 
 	}
+
+
 	@Transactional
 	public void desaffecterEmployeDuDepartement(int employeId, int depId)
 	{
-		Departement dep = deptRepoistory.findById(depId).get();
+		l.debug("methode desaffecterEmployeDuDepartement ");
+		try{
+			Departement dep = deptRepoistory.findById(depId).orElse(null);
+			if(dep!=null){
+				int employeNb = dep.getEmployes().size();
+				for(int index = 0; index < employeNb; index++){
+					if(dep.getEmployes().get(index).getId() == employeId){
+						dep.getEmployes().remove(index);
+						break;
 
-		int employeNb = dep.getEmployes().size();
-		for(int index = 0; index < employeNb; index++){
-			if(dep.getEmployes().get(index).getId() == employeId){
-				dep.getEmployes().remove(index);
-				break;//a revoir
-			}
+					}
+					l.debug("desaffecterEmployeDuDepartement fini avec succes ");
+				}}
 		}
-	}
+		catch (Exception e) {
+			l.error("erreur methode desaffecterEmployeDuDepartement : " +e);}
 
+	}
 	public int ajouterContrat(Contrat contrat) {
 		contratRepoistory.save(contrat);
 		return contrat.getReference();
 	}
 
-	public void affecterContratAEmploye(int contratId, int employeId) {
-		Contrat contratManagedEntity = contratRepoistory.findById(contratId).get();
-		Employe employeManagedEntity = employeRepository.findById(employeId).get();
 
-		contratManagedEntity.setEmploye(employeManagedEntity);
-		contratRepoistory.save(contratManagedEntity);
-		
-	}
 
-	public String getEmployePrenomById(int employeId) {
-		Employe employeManagedEntity = employeRepository.findById(employeId).get();
-		return employeManagedEntity.getPrenom();
-	}
-	public void deleteEmployeById(int employeId)
-	{
-		Employe employe = employeRepository.findById(employeId).get();
+	public Employe getEmployePrenomById(int employeId) {
+		l.debug("methode getEmployeById ");
 
-		//Desaffecter l'employe de tous les departements
-		//c'est le bout master qui permet de mettre a jour
-		//la table d'association
-		for(Departement dep : employe.getDepartements()){
-			dep.getEmployes().remove(employe);
+
+		try {
+			Employe et= employeRepository.findById(employeId).orElse(null);
+			l.debug("getEmployeById fini avec succes ");
+			return et;
+		} catch (Exception e) {
+			l.error("erreur methode getEmployeById : " +e);
 		}
-
-		employeRepository.delete(employe);
-	}
-
-	public void deleteContratById(int contratId) {
-		Contrat contratManagedEntity = contratRepoistory.findById(contratId).get();
-		contratRepoistory.delete(contratManagedEntity);
+		return null;
 
 	}
+
+	public int deleteEmployeById(int employeId)
+	{
+		l.debug("methode deleteEmployeById ");
+
+		try {
+			Employe employe = employeRepository.findById(employeId).orElse(null);
+
+
+			if(employe!=null && employe.getDepartements()!=null)
+				for(Departement dep : employe.getDepartements()){
+					dep.getEmployes().remove(employe);
+
+				}
+			employeRepository.delete(employe);
+			return -1;}
+		catch (Exception e) {
+			l.error("erreur methode deleteEmpolyeById : " +e);
+			return 0;
+		}
+	}
+
+
 
 	public int getNombreEmployeJPQL() {
 		return employeRepository.countemp();
 	}
-	
+
 	public List<String> getAllEmployeNamesJPQL() {
 		return employeRepository.employeNames();
 
 	}
-	
+
 	public List<Employe> getAllEmployeByEntreprise(Entreprise entreprise) {
 		return employeRepository.getAllEmployeByEntreprisec(entreprise);
 	}
@@ -126,7 +166,7 @@ public class EmployeServiceImpl implements IEmployeService {
 	public void deleteAllContratJPQL() {
          employeRepository.deleteAllContratJPQL();
 	}
-	
+
 	public float getSalaireByEmployeIdJPQL(int employeId) {
 		return employeRepository.getSalaireByEmployeIdJPQL(employeId);
 	}
@@ -139,9 +179,6 @@ public class EmployeServiceImpl implements IEmployeService {
 				return (List<Employe>) employeRepository.findAll();
 	}
 
-	@Override
-	public List<Timesheet> getTimesheetsByMissionAndDate(Employe employe, Mission mission, Date dateDebut, Date dateFin) {
-		return null;
-	}
+
 
 }
