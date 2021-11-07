@@ -102,4 +102,10 @@ public class TimesheetServiceImpl implements ITimesheetService {
 		return timesheetRepository.getAllEmployeByMission(missionId);
 	}
 
+	@Override
+	public Timesheet findTimesheet(TimesheetPK pk) {
+		
+		return timesheetRepository.findBytimesheetPK(pk);
+	}
+
 }
