@@ -36,7 +36,7 @@ public class TimeSheetTest {
 	{
 		int idemp;
 		int idmiss ;
-		Employe employe = new Employe( "sana", "romdhani", "sana.romdhani@esprit.tn", true, Role.INGENIEUR);
+		Employe employe = new Employe( "sana", "romdhani", "sana.romdhani1@esprit.tn", true, Role.INGENIEUR);
 		try
 		{
 		idemp = iEmployeService.ajouterEmploye(employe);
@@ -52,7 +52,7 @@ public class TimeSheetTest {
 	}
 	
 	@Test
-	public void SearchTimesheet()
+	public void TestSearchTimesheet()
 	{
 		int idemp;
 		int idmiss ;
