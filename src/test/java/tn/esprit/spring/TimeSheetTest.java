@@ -52,7 +52,19 @@ public class TimeSheetTest {
 	}
 	
 	@Test
-	public void TestSearchTimesheet()
+	public void testValiderTimeSheet() {
+		try {
+			LOGGER.info("In ValiderTimeSheet() : ");
+			LOGGER.debug("lancer methode");
+			it.validerTimesheet(1, 1, new Date(), new Date(), 1);
+		} catch (Exception e) {
+			LOGGER.error("Erreur dans ValiderTimeSheet() :" + e);
+		}
+	
+	}
+	
+	@Test
+	public void testfindTimesheet()
 	{
 		int idemp;
 		int idmiss ;
@@ -65,5 +77,6 @@ public class TimeSheetTest {
 		Assert.assertNotNull(it.findTimesheet(new TimesheetPK(idmiss, idemp, new Date(), new Date()))); 
 
 	}
+	
 
 }
