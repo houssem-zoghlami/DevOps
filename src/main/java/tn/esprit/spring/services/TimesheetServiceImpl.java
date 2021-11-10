@@ -43,8 +43,8 @@ public class TimesheetServiceImpl implements ITimesheetService {
 	}
     
 	public void affecterMissionADepartement(int missionId, int depId) {
-		Mission mission = missionRepository.findById(missionId).get();
-		Departement dep = deptRepoistory.findById(depId).get();
+		Mission mission = missionRepository.findById(missionId).orElse(new Mission());
+		Departement dep = deptRepoistory.findById(depId).orElse(new Departement());
 		mission.setDepartement(dep);
 		missionRepository.save(mission);
 		
@@ -59,7 +59,7 @@ public class TimesheetServiceImpl implements ITimesheetService {
 		
 		Timesheet timesheet = new Timesheet();
 		timesheet.setTimesheetPK(timesheetPK);
-		timesheet.setValide(false); //par defaut non valide
+		timesheet.setValide(false); 
 		timesheetRepository.save(timesheet);
 		
 	}
@@ -67,14 +67,14 @@ public class TimesheetServiceImpl implements ITimesheetService {
 	
 	public void validerTimesheet(int missionId, int employeId, Date dateDebut, Date dateFin, int validateurId) {
 		l.info("In valider Timesheet");
-		Employe validateur = employeRepository.findById(validateurId).get();
-		Mission mission = missionRepository.findById(missionId).get();
-		//verifier s'il est un chef de departement (interet des enum)
+		Employe validateur = employeRepository.findById(validateurId).orElse(new Employe());
+		Mission mission = missionRepository.findById(missionId).orElse(new Mission());
+		
 		if(!validateur.getRole().equals(Role.CHEF_DEPARTEMENT)){
 			l.info("l'employe doit etre chef de departement pour valider une feuille de temps !");
 			return;
 		}
-		//verifier s'il est le chef de departement de la mission en question
+		
 		boolean chefDeLaMission = false;
 		for(Departement dep : validateur.getDepartements()){
 			if(dep.getId() == mission.getDepartement().getId()){
@@ -86,15 +86,15 @@ public class TimesheetServiceImpl implements ITimesheetService {
 			l.info("l'employe doit etre chef de departement de la mission en question");
 			return;
 		}
-//
+
 		TimesheetPK timesheetPK = new TimesheetPK(missionId, employeId, dateDebut, dateFin);
 		Timesheet timesheet =timesheetRepository.findBytimesheetPK(timesheetPK);
 		timesheet.setValide(true);
 		
-		//Comment Lire une date de la base de données
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		l.info("dateDebut : " + dateFormat.format(timesheet.getTimesheetPK().getDateDebut()));
 		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		String t = dateFormat.format(timesheet.getTimesheetPK().getDateDebut());
+		l.info("dateDebut : {}",t);
 	}
 
 	

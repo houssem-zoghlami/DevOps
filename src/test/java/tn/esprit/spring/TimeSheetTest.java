@@ -13,22 +13,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+
+
+
+import java.util.List;
+
+
+
+
+
 import tn.esprit.spring.entities.Employe;
 import tn.esprit.spring.entities.Mission;
 import tn.esprit.spring.entities.Role;
+
 import tn.esprit.spring.entities.TimesheetPK;
+
 import tn.esprit.spring.services.EmployeServiceImpl;
-import tn.esprit.spring.services.ITimesheetService;
+
+import tn.esprit.spring.services.TimesheetServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TimeSheetTest {
 	
 	@Autowired
-	ITimesheetService it;
+	private EmployeServiceImpl iEmployeService;
+
 	@Autowired
-	EmployeServiceImpl iEmployeService;
+	  private TimesheetServiceImpl timesheetServiceImpl;
+
+	  
+	  List<Employe> employes; 
+	  List<Mission> missions; 
 	
+
+	
+
 	private static final Logger LOGGER = LogManager.getLogger(TimeSheetTest.class);
 	
 	@Test
@@ -41,13 +61,13 @@ public class TimeSheetTest {
 		{
 		idemp = iEmployeService.ajouterEmploye(employe);
 		Mission mission = new Mission("Mission1","Lorem Ipsum");
-		idmiss = it.ajouterMission(mission);
-		it.ajouterTimesheet(idmiss, idemp, new Date(),new Date());
-		Assert.assertNotNull(it.findTimesheet(new TimesheetPK(idmiss, idemp, new Date(), new Date()))); 
+		idmiss = timesheetServiceImpl.ajouterMission(mission);
+		timesheetServiceImpl.ajouterTimesheet(idmiss, idemp, new Date(),new Date());
+		Assert.assertNotNull(timesheetServiceImpl.findTimesheet(new TimesheetPK(idmiss, idemp, new Date(), new Date()))); 
 		
 		LOGGER.info("Added successfully with");
-		}
-		catch (Exception e) { LOGGER.error("Problem encountred : " + e); }
+	}
+	catch (Exception e) { LOGGER.error("Problem encountred : " + e); }
 		
 	}
 	
@@ -56,8 +76,8 @@ public class TimeSheetTest {
 		try {
 			LOGGER.info("In ValiderTimeSheet() : ");
 			LOGGER.debug("lancer methode");
-			it.validerTimesheet(1, 1, new Date(), new Date(), 1);
-		} catch (Exception e) {
+			timesheetServiceImpl.validerTimesheet(1, 1, new Date(), new Date(), 1);
+		  } catch (Exception e) {
 			LOGGER.error("Erreur dans ValiderTimeSheet() :" + e);
 		}
 	
@@ -72,11 +92,14 @@ public class TimeSheetTest {
 
 		idemp = iEmployeService.ajouterEmploye(employe);
 		Mission mission = new Mission("Mission1","Lorem Ipsum");
-		idmiss = it.ajouterMission(mission);
-		it.ajouterTimesheet(idmiss, idemp, new Date(),new Date());
-		Assert.assertNotNull(it.findTimesheet(new TimesheetPK(idmiss, idemp, new Date(), new Date()))); 
+		idmiss = timesheetServiceImpl.ajouterMission(mission);
+		timesheetServiceImpl.ajouterTimesheet(idmiss, idemp, new Date(),new Date());
+		Assert.assertNotNull(timesheetServiceImpl.findTimesheet(new TimesheetPK(idmiss, idemp, new Date(), new Date()))); 
 
 	}
+	
+	  
+	
 	
 
 }
