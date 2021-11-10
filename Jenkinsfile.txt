@@ -1,0 +1,49 @@
+pipeline {
+
+       agent any
+        
+           stages{
+
+             /*stage( 'Checkout  GIT' ){
+                       steps{
+                          echo 'Pulling ... ';
+                              git branch:  'Sana' ,
+                              url :'https://github.com/houssem-zoghlami/DevOps.git'
+                              }
+                    }*/
+
+            stage("Test,Build"){
+               steps{
+
+                   bat "mvn clean install"
+                    }
+
+                  }
+
+              stage("package"){
+               steps{
+
+                   bat "mvn package"
+                    }
+
+                  }
+                  
+               stage("Sonar"){
+               steps{
+
+                   bat "mvn sonar:sonar"
+                    }
+
+                  }
+                  
+                stage("Nexus"){
+               steps{
+
+                   bat "mvn deploy"
+                    }
+
+                  }
+				  
+				
+           }
+}
