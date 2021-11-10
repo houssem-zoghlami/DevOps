@@ -10,7 +10,6 @@ import tn.esprit.spring.repository.EmployeRepository;
 import tn.esprit.spring.repository.TimesheetRepository;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -59,18 +58,20 @@ public class EmployeServiceImpl implements IEmployeService {
 		Departement depManagedEntity = deptRepoistory.findById(depId).orElse(null);
 		Employe employeManagedEntity = employeRepository.findById(employeId).orElse(null);
 		try {
-			if(depManagedEntity!=null)
+			if(depManagedEntity!=null){
 				if( depManagedEntity.getEmployes() == null){
 
 					List<Employe> employes = new ArrayList<>();
 					employes.add(employeManagedEntity);
 					depManagedEntity.setEmployes(employes);
-				}else{
+				}
+				else{
 
 					depManagedEntity.getEmployes().add(employeManagedEntity);
 					l.debug("effecterEmployeAdepartement fini avec succes ");
 
 				}
+		}
 		}
 		catch (Exception e) {
 			l.error("erreur methode affecter employeadepartement : " +e);
@@ -124,6 +125,7 @@ public class EmployeServiceImpl implements IEmployeService {
 	}
 
 	public int deleteEmployeById(int employeId)
+
 	{
 		l.debug("methode deleteEmployeById ");
 
