@@ -53,9 +53,9 @@ public class EntrepriseServiceImplTest {
 		
 		assertEquals(0, i);}
 		else {
-			int i = ientrepriseservice.deleteEntrepriseById(48);
+			int i = ientrepriseservice.deleteEntrepriseById(49);
 			
-			assertEquals(48, i);}
+			assertEquals(49, i);}
 	}
 	
 
