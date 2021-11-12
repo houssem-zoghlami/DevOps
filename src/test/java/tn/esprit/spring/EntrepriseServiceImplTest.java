@@ -45,18 +45,18 @@ public class EntrepriseServiceImplTest {
 	List<String> depNames = ientrepriseservice.getAllDepartementsNamesByEntreprise(17);
 		assertNotNull(depNames);
 	}
-	@Test
-	public void testDeleteEntrepriseById()
-	{
-		if(idE!=null){
-		int i = ientrepriseservice.deleteEntrepriseById(idE);
+	//@Test
+	//public void testDeleteEntrepriseById()
+	//{
+		//if(idE!=null){
+		//int i = ientrepriseservice.deleteEntrepriseById(idE);
 		
-		assertEquals(0, i);}
-		else {
-			int i = ientrepriseservice.deleteEntrepriseById(49);
+		//assertEquals(0, i);}
+		//else {
+			//int i = ientrepriseservice.deleteEntrepriseById(49);
 			
-			assertEquals(49, i);}
-	}
+			//assertEquals(49, i);}
+	//}
 	
 
 
